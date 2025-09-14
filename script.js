@@ -73,12 +73,11 @@ function updateLeaderboard() {
 
 // ---------- CSV ----------
 function downloadCSV() {
-  let csv = "rank,name,points\n";
+  let csv = "name,points,rank\n"; // changed header
   players.forEach((player, index) => {
-    csv += `${index + 1},${player.name},${player.total}\n`;
+    csv += `${player.name},${player.total},${index + 1}\n`;
   });
 
-  // Add UTF-8 BOM so Excel/other apps detect encoding properly
   let blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
   let link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -94,7 +93,7 @@ function loadCSV(event) {
     const text = e.target.result;
     const lines = text.trim().split("\n").slice(1);
     players = lines.map(line => {
-      const [rank, name, total] = line.split(",");
+      const [name, total, rank] = line.split(","); // match new format
       return { name, total: parseInt(total) };
     });
     updateLeaderboard();
